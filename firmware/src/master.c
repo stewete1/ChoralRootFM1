@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: GPL-3.0-only
+/* SPDX-License-Identifier: GPL-3.0-only test
  * Copyright (C) 2026 Leo Kuroshita (@kurogedelic), Hügelton Instruments
  * Copyright (C) 2026 ChoralRoot FM-1 contributors (a fork of Felucca) */
 /* MASTER, the pot (main.c; the emulator: tools/emu/emu_fw.c, the same two functions on its own pot).
