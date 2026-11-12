@@ -123,7 +123,7 @@ Holding them **with HOME** for five seconds is the way into update mode, see
 
 | Keys | ChoralRoot | Job |
 | --- | --- | --- |
-| F#3 G#3 A#3 (black) | **DIM MIN MAJ** | the chord type, while held |
+| F#3 G#3 A#3 (black) | **7 MIN MAJ** | the chord type, while held |
 | G#3 + A#3 together | **SUS** | both small black keys at once (one finger on both) |
 | F3 G3 A3 B3 (white) | **6 m7 M7 9** | extensions, while held; they stack |
 | C4 to G5 (20 keys) | **roots** | a single note alone, a chord with a chord key held or latched; OCT- / OCT+ shift them by octaves |
@@ -131,7 +131,7 @@ Holding them **with HOME** for five seconds is the way into update mode, see
 LOCK, which latches the chord block, is the **LFO** button (below).
 
 ```
-black      DIM   MIN   MAJ         C#4   D#4         F#4   ...
+black      7     MIN   MAJ         C#4   D#4         F#4   ...
            F#3   G#3   A#3
                  \__ SUS __/   (G#3 + A#3 together)
 white    6     m7    M7    9     C4    D4    E4    F4   ...   G5
@@ -429,13 +429,14 @@ the default). Updating from an older version moves a unit to them once, whatever
 Options stays.
 
 ```
-black      DIM   MIN   MAJ         C#4   D#4         F#4   G#4   A#4         C#5   D#5         F#5
+black      7     MIN   MAJ         C#4   D#4         F#4   G#4   A#4         C#5   D#5         F#5
            F#3   G#3   A#3
                  \__ SUS __/   (G#3 + A#3 together)
 white    6     m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5    D5    E5    F5    G5
          F3    G3    A3    B3    |------------------------ roots: C4 .. G5 (20) ------------------------|
 ```
 
+- **F#3 is `7`**: root, major third, perfect fifth, minor seventh. Classic keeps `DIM` on F#3.
 - **SUS is G#3 + A#3 held together**, always (press both small black keys with one finger).
 - **The SUS Window** (Options > SUS Window, 30 to 80 ms, 30 by default). One finger never lands on both keys at
   once. A root pressed while the first of the pair is down and its window still open waits, and plays when the
@@ -467,7 +468,7 @@ white    6     m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5   
 
 | Keys | Classic | FM-1 |
 | --- | --- | --- |
-| F#3 G#3 A#3 | DIM MIN MAJ | the same |
+| F#3 G#3 A#3 | DIM MIN MAJ | 7 MIN MAJ |
 | C#4 | **SUS**, a key of its own | a root (SUS is G#3 + A#3) |
 | F3 G3 A3 | 6 m7 M7 | the same |
 | C4 | **9** | a root (the 9 is B3) |
@@ -2299,7 +2300,7 @@ SELECT: the next lane. KNOB 1 to KNOB 4: the lane's values. PRESETS: the engine 
 
 | Key | Job |
 | --- | --- |
-| F#3 G#3 A#3 | DIM MIN MAJ; G#3 + A#3 together: SUS (Classic chord keys: SUS on C#4) |
+| F#3 G#3 A#3 | 7 MIN MAJ; G#3 + A#3 together: SUS (Classic chord keys: SUS on C#4) |
 | F3 G3 A3 B3 | 6 m7 M7 9 (Classic: the 9 on C4, B3 is LOCK: tap on / off, held the LOCK layer) |
 | LFO (a button) | LOCK (above). With LOCK on, the only latched type pressed again alone: off (single notes, the extensions kept) |
 | F3 to G5, Keyboard = Full | 27 single notes (no chord keys; LOCK on LFO, none in Classic); the split at F4. Key Mode on with Key plays Chords: the key's chords. Full K Shorts On: F3 to F5 notes, F#5 the chord keys, G5 chords on every key |

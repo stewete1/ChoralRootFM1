@@ -24,7 +24,7 @@
   const SCREEN_A = [272, 84, 150, 150], VIEW = [14, 14, 876, 538];
   const hint = (kind, idx) => (KEYMAP.find((m) => m.kind === kind && m.idx === idx) || {}).cap;
   // role colours: white chords, blue voicing, orange bass and 7ths, red loop / REC, yellow key, green FX
-  const CHORD_COL = { DIM: C.cream, MIN: C.cream, MAJ: C.cream, SUS: C.cream, 6: C.orange, m7: C.orange, M7: C.orange, 9: C.orange, LOCK: C.blue };
+  const CHORD_COL = { DIM: C.cream, 7: C.cream, MIN: C.cream, MAJ: C.cream, SUS: C.cream, 6: C.orange, m7: C.orange, M7: C.orange, 9: C.orange, LOCK: C.blue };
   const BTN_COL = { FX: C.green, KEY: C.yellow, BASS: C.orange, LOOP: C.red, REC: C.red };
   const ENC_COL = ["#F6F2EE", C.orange, C.cream, C.blue, C.orange, C.cream, C.green, C.cream];
 

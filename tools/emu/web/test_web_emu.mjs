@@ -19,10 +19,12 @@ const TMP = process.env.TEST_TMP || path.join(ROOT, "build/emu-web-test");
 const args = new Set(process.argv.slice(2));
 fs.mkdirSync(TMP, { recursive: true });
 await import(path.join(HERE, "keymap.js"));
-const { KEYMAP, BTN, ENC, noteName } = globalThis.FM1;
+const { KEYMAP, BTN, ENC, noteName, CHORD, CHORD_FM1 } = globalThis.FM1;
 
 let fails = 0;
 const ok = (c, msg) => { console.log(`  ${c ? "ok  " : "FAIL"}  ${msg}`); if (!c) fails++; return c; };
+
+ok(CHORD[1] === "DIM" && CHORD_FM1[1] === "7", "F#3 label is 7 in FM-1 and remains DIM in Classic");
 
 // ---------------------------------------------------------------- the module, as worklet.js loads it ---
 let stdout = "";

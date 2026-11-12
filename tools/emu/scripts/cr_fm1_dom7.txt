@@ -1,0 +1,36 @@
+# F#3 is FM-1's dominant seventh key: MAJ + m7; Classic keeps DIM.
+wait 500
+keys fm1
+btn F#3 down
+wait 100
+btn D4 down
+wait 300
+dump                          # 1: FM-1 D7 = D F# A C
+btn D4 up
+btn F#3 up
+wait 500
+btn LFO 80                    # LOCK on
+wait 300
+btn F#3 down
+wait 100
+btn F#3 up
+wait 300
+expect led F#3 on
+expect led A#3 faint
+btn D4 down
+wait 300
+dump                          # 2: latched 7 still shows on F#3
+btn D4 up
+btn LFO 80                    # LOCK off; clear the latch
+wait 300
+keys classic
+wait 500
+btn F#3 down
+wait 100
+btn D4 down
+wait 300
+dump                          # 3: Classic Ddim = D F Ab
+btn D4 up
+btn F#3 up
+wait 500
+quit

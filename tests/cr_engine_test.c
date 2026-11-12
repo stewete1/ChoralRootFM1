@@ -236,6 +236,9 @@ static void s_chords(void)
     MD(CR_MOD_MAJ); MD(CR_MOD_MAJ7); K(50, 4);
     expect("+50/79 +54/79 +57/79 +61/79", "Dmaj7");
     R(50, 4); clear(); MU(CR_MOD_MAJ7); MU(CR_MOD_MAJ);
+    MD(CR_MOD_MAJ); MD(CR_MOD_M7); K(48, 4);
+    expect("+48/79 +52/79 +55/79 +58/79", "C7 = C E G Bb (Maj + m7)");
+    R(48, 4); clear(); MU(CR_MOD_M7); MU(CR_MOD_MAJ);
     MD(CR_MOD_MAJ); MD(CR_MOD_6); MD(CR_MOD_9); K(48, 1);
     expect("+48/127 +52/127 +55/127 +57/127 +62/127", "C69 = C E G A D (Maj + 6 + 9)");
     R(48, 1); MU(CR_MOD_9); MU(CR_MOD_6); MU(CR_MOD_MAJ); clear();

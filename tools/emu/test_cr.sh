@@ -3626,9 +3626,21 @@ silent_end cr_fm1_keys
 echo "  the FM-1 type keys with LOCK on: each pushed alone replaces the latch (3y164)"
 "$EMU" --headless --script "$S/cr_fm1_lock.txt" >"$OUT/cr_fm1_lock.log" 2>&1 || bad "cr_fm1_lock: exit $?"
 lt=$(LC_ALL=C grep -a '^  lock:' "$OUT/cr_fm1_lock.log" | sed -n '1,9p' | sed -n 's/.* latched \([0-9A-F]*\) .*/\1/p' | tr '\n' ' ')
-[ "$lt" = "02 01 04 08 01 02 04 01 00 " ] &&
-    ok "LOCK on: G#3 MIN, F#3 DIM, A#3 MAJ, the pair SUS, F#3 DIM, G#3 MIN, A#3 MAJ, F#3 DIM: each type key alone replaces the latch; F#3 again alone: off" \
+[ "$lt" = "02 24 04 08 24 02 04 24 00 " ] &&
+    ok "LOCK on: G#3 MIN, F#3 7, A#3 MAJ, the pair SUS, F#3 7, G#3 MIN, A#3 MAJ, F#3 7: each type key alone replaces the latch; F#3 again alone: off" \
     || bad "LOCK's type keys: the latch $lt"
+
+echo "FM-1 F#3 dominant 7, LOCK's key indication, and Classic DIM"
+EMU_UI_LOG=1 "$EMU" --headless --script "$S/cr_fm1_dom7.txt" >"$OUT/cr_fm1_dom7.log" 2>&1 || bad "cr_fm1_dom7: exit $?"
+L="$OUT/cr_fm1_dom7.log"
+dl() { LC_ALL=C grep -a "^  $1" "$L" | sed -n "$2p"; }
+fk() { dl 'cr: voices' "$1" | sed -n 's/.* chord \(.*\) sounding \([01]\) notes\(.*\)$/\1|\2|\3/p'; }
+[ "$(fk 1)" = "D7|1| 62 66 69 72" ] &&
+    ok "FM-1 F#3 + D4 is D7: root, major third, perfect fifth, minor seventh" || bad "FM-1 F#3 chord: '$(fk 1)'"
+[ "$(fk 2)" = "D7|1| 62 66 69 72" ] && has 'expect led F#3 on .*: ok' "$L" && has 'expect led A#3 faint .*: ok' "$L" &&
+    ok "LOCK latches the 7 on F#3, not the A#3 MAJ key" || bad "LOCK's 7 key: '$(fk 2)'"
+[ "$(fk 3)" = "Ddim|1| 62 65 68" ] &&
+    ok "Classic F#3 + D4 remains Ddim" || bad "Classic F#3 chord: '$(fk 3)'"
 
 echo "Options > MIDI Keys and Full K Shorts (0.24): MIDI notes 53 .. 79 press the keys; F#5 / G5 on the Full keyboard"
 EMU_UI_LOG=1 "$EMU" --headless --script "$S/cr_fm1_midi_full.txt" >"$OUT/cr_fm1_midi_full.log" 2>&1 || bad "cr_fm1_midi_full: exit $?"
