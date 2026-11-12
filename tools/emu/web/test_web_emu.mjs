@@ -24,7 +24,8 @@ const { KEYMAP, BTN, ENC, noteName, CHORD, CHORD_FM1 } = globalThis.FM1;
 let fails = 0;
 const ok = (c, msg) => { console.log(`  ${c ? "ok  " : "FAIL"}  ${msg}`); if (!c) fails++; return c; };
 
-ok(CHORD[1] === "DIM" && CHORD_FM1[1] === "7", "F#3 label is 7 in FM-1 and remains DIM in Classic");
+ok(CHORD[0] === "6" && CHORD_FM1[0] === "m7" && CHORD[1] === "DIM" && CHORD_FM1[1] === "7",
+  "F3 is m7 only in FM-1; Classic keeps 6 and F#3 DIM");
 
 // ---------------------------------------------------------------- the module, as worklet.js loads it ---
 let stdout = "";

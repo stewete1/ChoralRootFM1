@@ -125,7 +125,8 @@ Holding them **with HOME** for five seconds is the way into update mode, see
 | --- | --- | --- |
 | F#3 G#3 A#3 (black) | **7 MIN MAJ** | the chord type, while held |
 | G#3 + A#3 together | **SUS** | both small black keys at once (one finger on both) |
-| F3 G3 A3 B3 (white) | **6 m7 M7 9** | extensions, while held; they stack |
+| F3 (white) | **m7** | minor seventh chord: root, minor third, perfect fifth, minor seventh |
+| G3 A3 B3 (white) | **m7 M7 9** | extensions, while held; they stack |
 | C4 to G5 (20 keys) | **roots** | a single note alone, a chord with a chord key held or latched; OCT- / OCT+ shift them by octaves |
 
 LOCK, which latches the chord block, is the **LFO** button (below).
@@ -134,7 +135,7 @@ LOCK, which latches the chord block, is the **LFO** button (below).
 black      7     MIN   MAJ         C#4   D#4         F#4   ...
            F#3   G#3   A#3
                  \__ SUS __/   (G#3 + A#3 together)
-white    6     m7    M7    9     C4    D4    E4    F4   ...   G5
+white    m7    m7    M7    9     C4    D4    E4    F4   ...   G5
          F3    G3    A3    B3    |---------- roots: C4 .. G5 ---------|
 ```
 
@@ -258,17 +259,17 @@ Hold one chord type and any extensions, then press a root.
 
 | Key | Name | Notes above the root (semitones) | On the screen (root D; the extensions on D major) |
 | --- | --- | --- | --- |
-| F#3 | DIM | 3, 6 | `Ddim` |
+| F#3 | 7 | 4, 7, 10 | `D7` |
 | G#3 | MIN | 3, 7 | `Dm` |
 | A#3 | MAJ | 4, 7 | `DM` |
 | G#3 + A#3 | SUS | 5, 7 | `Dsus` |
-| F3 | 6 | adds 9 | `D` with a small `6` |
+| F3 | m7 chord (Classic: 6) | 3, 7, 10 | `Dm7` |
 | G3 | m7 | adds 10 | `D` with a small `7` (on a sus chord: `m7`) |
 | A3 | M7 | adds 11 | `D` with a small `M7` |
 | B3 | 9 | adds 14 | `D` with a small `9` |
 
-The keys are the FM-1 layout's, the default ([The Classic chord keys](#the-classic-chord-keys) has the other one: SUS
-on C#4, the 9 on C4).
+The keys are the FM-1 layout's, the default ([The Classic chord keys](#the-classic-chord-keys) has the other one: F3
+adds a 6th; SUS is on C#4 and the 9 on C4).
 
 - **SUS is G#3 and A#3 together**, always: press both small black keys with one finger. A root pressed while the pair
   is still landing waits for it ([the SUS Window](#the-fm-1-chord-keys)), so a minor chord never turns into a sus
@@ -432,7 +433,9 @@ Options stays.
 black      7     MIN   MAJ         C#4   D#4         F#4   G#4   A#4         C#5   D#5         F#5
            F#3   G#3   A#3
                  \__ SUS __/   (G#3 + A#3 together)
-white    6     m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5    D5    E5    F5    G5
+white    m7    m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5    D5    E5    F5    G5
+        - **F3 is `m7`**: root, minor third, perfect fifth, minor seventh. Classic keeps `6` on F3.
+        - **F#3 is `7`**
          F3    G3    A3    B3    |------------------------ roots: C4 .. G5 (20) ------------------------|
 ```
 
@@ -469,8 +472,9 @@ white    6     m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5   
 | Keys | Classic | FM-1 |
 | --- | --- | --- |
 | F#3 G#3 A#3 | DIM MIN MAJ | 7 MIN MAJ |
+| F3 | **6** | **m7 chord** |
 | C#4 | **SUS**, a key of its own | a root (SUS is G#3 + A#3) |
-| F3 G3 A3 | 6 m7 M7 | the same |
+| G3 A3 B3 | m7 M7 9 | the same |
 | C4 | **9** | a root (the 9 is B3) |
 | B3 | **LOCK** (tap: on / off, lit; held: the LOCK layer) | the 9 |
 | LFO | **LATCH** (tap) | LOCK (LATCH: GLO held + LFO) |
@@ -2301,7 +2305,8 @@ SELECT: the next lane. KNOB 1 to KNOB 4: the lane's values. PRESETS: the engine 
 | Key | Job |
 | --- | --- |
 | F#3 G#3 A#3 | 7 MIN MAJ; G#3 + A#3 together: SUS (Classic chord keys: SUS on C#4) |
-| F3 G3 A3 B3 | 6 m7 M7 9 (Classic: the 9 on C4, B3 is LOCK: tap on / off, held the LOCK layer) |
+| F3 | m7 chord (Classic: 6) |
+| G3 A3 B3 | m7 M7 9 (Classic: G3 m7, A3 M7, C4 9; B3 is LOCK) |
 | LFO (a button) | LOCK (above). With LOCK on, the only latched type pressed again alone: off (single notes, the extensions kept) |
 | F3 to G5, Keyboard = Full | 27 single notes (no chord keys; LOCK on LFO, none in Classic); the split at F4. Key Mode on with Key plays Chords: the key's chords. Full K Shorts On: F3 to F5 notes, F#5 the chord keys, G5 chords on every key |
 | C4 to G5 | roots (Classic: D4 to G5) |

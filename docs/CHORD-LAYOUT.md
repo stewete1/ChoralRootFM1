@@ -35,9 +35,10 @@ Recorded as decided; the sections below work them out.
 1. **Options > Chord Layout: Classic / FM-1.** Classic is today's layout and the default. It lives in the settings
    block (below: `sticky`'s spare bits); an older firmware ignores it and starts in Classic; it is hidden on the
    SMK-37 build.
-2. **The FM-1 layout.** F#3 G#3 A#3 = DIM MIN MAJ. F3 G3 A3 B3 = 6 m7 M7 9. C4 .. G5 are roots: 20 instead of 18
-   (C4 and C#4 become roots). **SUS = G# + A# held together, always, whatever Secret Chords says** (the owner presses
-   both small black keys with one finger).
+2. **The FM-1 layout (original 2026-10-16 assignment).** F#3 G#3 A#3 = DIM MIN MAJ. F3 G3 A3 B3 = 6 m7 M7 9.
+  The current build changes F3 to an m7 chord (see [the layout table](#the-two-layouts)); C4 .. G5 remain roots:
+  20 instead of 18 (C4 and C#4 become roots). **SUS = G# + A# held together, always, whatever Secret Chords says**
+  (the owner presses both small black keys with one finger).
 3. **Secret chords in FM-1**, only with Secret Chords on; each keeps the key it has in Classic: F# + G# + A# = the
    power chord (DIM plus the SUS pair, as DIM + SUS); F# + G# = m add4 (keeps MIN, as MIN + SUS); F# + A# = augmented
    (keeps MAJ, as MAJ + SUS). With Secret Chords off only G# + A# combine; the other pairs keep "last pressed wins".
@@ -163,14 +164,14 @@ FM-1
 black      7     MIN   MAJ         C#4   D#4         F#4   G#4   A#4         C#5   D#5         F#5
            F#3   G#3   A#3
                  \__ SUS __/   (G# + A# together, one finger)
-white    6     m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5    D5    E5    F5    G5
+white    m7    m7    M7    9     C4    D4    E4    F4    G4    A4    B4    C5    D5    E5    F5    G5
          F3    G3    A3    B3    |--------------------- roots: C4 .. G5 (20) ---------------------|
 buttons  LFO = LOCK (tap on / off; held: the LOCK layer)    GLO + LFO = LATCH
 ```
 
 | Key (firmware k) | Classic | FM-1 |
 | --- | --- | --- |
-| F3 (0) | 6 | 6 |
+| F3 (0) | 6 | **m7 chord** (root, minor third, perfect fifth, minor seventh) |
 | F#3 (1) | DIM | **7** (root, major third, perfect fifth, minor seventh) |
 | G3 (2) | m7 | m7 |
 | G#3 (3) | MIN | MIN; with A#3: SUS |
@@ -183,8 +184,9 @@ buttons  LFO = LOCK (tap on / off; held: the LOCK layer)    GLO + LFO = LATCH
 | LFO button | LATCH | **LOCK** (tap); the LOCK layer (held) |
 | GLO + LFO | nothing | **LATCH** |
 
-The extensions keep their order (6 m7 M7 9 on the four white keys from F3); F#3 is the dominant 7 key in FM-1, while
-Classic keeps DIM. What moves is SUS (from its own key to the pair), 9 (C4 to B3) and LOCK (B3 to LFO).
+F3 is a minor seventh chord key in FM-1, while Classic keeps its 6 extension. G3, A3 and B3 remain m7, M7 and 9;
+F#3 is the dominant 7 key in FM-1, while Classic keeps DIM. What moves is SUS (from its own key to the pair),
+9 (C4 to B3) and LOCK (B3 to LFO).
 
 ## The Options, and where they are kept
 
@@ -249,13 +251,15 @@ the LATCH byte (its bit 0, manual, `CRS_FIX(sticky, 0, 1)` today); MIDI Keys tak
 
 ## The combo table
 
-The type keys of FM-1 are F#3, G#3, A#3. "Secret applies" is the engine's rule today
+The upper type keys of FM-1 are F#3, G#3, A#3. F3 is a separate m7 chord key (MIN + m7); G3, A3 and B3 remain
+the m7, M7 and 9 extensions. "Secret applies" is the engine's rule today
 (`cr_engine.c crx_secret_quality`): Secret Chords **All**, or **Simple** while Play Style is Simple. The extensions
-(F3 G3 A3 B3) stack on any row as ever.
+(G3 A3 B3) stack on any row as ever.
 
 | Type keys held (FM-1) | Secret does not apply | Secret applies | Classic's keys for the same chord | On the screen (root D) |
 | --- | --- | --- | --- | --- |
 | none | a single note (Key Mode, Key plays Chords: the scale's chord) | the same | none | `D` |
+| **F3** | **m7 chord** (MIN + m7) | the same | G#3 + G3 (MIN + m7) | `Dm7` |
 | F# | **7** (MAJ + m7) | **7** (MAJ + m7) | G3 + A#3 | `D7` |
 | G# | MIN | MIN | G#3 | `Dm` |
 | A# | MAJ | MAJ | A#3 | `DM` |
@@ -428,7 +432,7 @@ shortcuts, the picking maps in layers.
 
 | | |
 | --- | --- |
-| **The map** | MIDI note n = the FM-1's key n - 53: **53 .. 79 = F3 .. G5**, the keybed's own notes. So in FM-1, 54 = 7, 56 = MIN, 58 = MAJ, 56 + 58 together = SUS, 53 / 55 / 57 / 59 = 6 / m7 / M7 / 9, 60 .. 79 the roots; in Classic, 54 56 58 61 = DIM MIN MAJ SUS, 53 55 57 60 = 6 m7 M7 9, 59 = LOCK, 62 .. 79 the roots. OCT- / OCT+ shift the roots as for the keys (the map is by key, not by pitch). Notes outside 53 .. 79: ignored |
+| **The map** | MIDI note n = the FM-1's key n - 53: **53 .. 79 = F3 .. G5**, the keybed's own notes. So in FM-1, 53 = m7 chord, 54 = 7, 56 = MIN, 58 = MAJ, 56 + 58 together = SUS, 55 / 57 / 59 = m7 / M7 / 9, 60 .. 79 the roots; in Classic, 54 56 58 61 = DIM MIN MAJ SUS, 53 55 57 60 = 6 m7 M7 9, 59 = LOCK, 62 .. 79 the roots. OCT- / OCT+ shift the roots as for the keys (the map is by key, not by pitch). Notes outside 53 .. 79: ignored |
 | **The channel** | Options > MIDI Keys: Off (default), ch 1 .. ch 16; the values skip the channels of MIDI Perform and MIDI Bass (a channel is either the keys or a part's notes, never both; setting MIDI Perform or MIDI Bass to the Keys' channel switches MIDI Keys Off, with the message `MIDI Keys off`). On that channel only notes act (note on, note off, note on with velocity 0); CC 123 / 120 release every key MIDI holds; everything else on it is ignored |
 | **The velocity** | the note's velocity plays the key's sound (as Key Touch Dynamic's measured velocity does: `cu_press_vel`), whatever Key Touch says; the chord keys ignore it as they do today |
 | **The path** | `cr_midi.c crm_map` returns a new kind, `CRM_KEY` (key index, velocity, down), for the MIDI Keys channel, checked before the parts' channels. `cr_out.c cr_midi_in` (the audio ISR) puts it on a **queue of its own**, `cr_mkq` (64 entries, ISR → UI), not on `cr_min_q` (32 entries, which drops on a burst: a lost note-off would hang a key). When it is full a note-on is dropped, never a note-off (an off for a key MIDI does not hold is ignored). The UI drains it in `cr_ui_input` before `cu_scan_keys`, and calls `cu_key_press` / `cu_key_release` with the key index: from there it is a key like the panel's |
@@ -507,7 +511,7 @@ Found in the code (2026-10-16, origin/main 4ecd5be). "Needs" is the build's work
 
 | Place | What it does today | Needs |
 | --- | --- | --- |
-| `cr_ui.c:61` `CU_MOD_OF_KEY[9]` | key 0 .. 8 → `cr_mod_t`, 0xFF for B3 | a second table for FM-1 (keys 0 .. 6: 6 7 m7 MIN M7 MAJ 9), chosen by the layout; the pair handled by the resolver |
+| `cr_ui.c:61` `CU_MOD_OF_KEY[9]` | key 0 .. 8 → `cr_mod_t`, 0xFF for B3 | a second table for FM-1 (keys 0 .. 6: m7 chord, 7, m7, MIN, M7, MAJ, 9), chosen by the layout; the chord keys handled by the resolver |
 | `cr_ui.c:63` `CU_ROOT0` (9), `:67` `cu_white_idx`, `:76` `cu_white_key` | the first root; the white roots' index from D4 | `cu_root0()` (9 / 7) for "plays"; `CU_PICK0` 9 for the pick maps ([Picking keys](#picking-keys-in-layers)) |
 | `cr_ui.c:3706` `CU_KEY_LOCK` 6, `CU_KEY_MIN` 3, `CU_KEY_MAJ` 5 | B3 = LOCK; the KEY layer's scale keys | LOCK key only in Classic; MIN / MAJ unchanged |
 | `cr_ui.c:4018` `cu_mods_phys` | the chord keys held → `cr_mod_t` bits (LOCK's `CRE_MODTOUCH`) | through the resolver in FM-1 |
@@ -535,8 +539,8 @@ Found in the code (2026-10-16, origin/main 4ecd5be). "Needs" is the build's work
 | `cr_ui.c` `cu_key_press`, `cu_scan` (the waiting roots) | a root plays at its press | a root pressed inside an open gesture is held back (`cu.kwait` bits, its velocity, its release if it comes first) and posted at the window's close, every waiting root in one batch; the gesture's timer checked each scan |
 | `cr_settings.h` / `.c` `sticky` (167; 208, 525, 560, 764, 1104), `raw_sound` (173; 166, 223, 527, 535, 570) | LATCH; Raw Chord Sound | the bits, the masks, the merges (above) |
 | **the calibration** (`cr_ui.c:4796`, `panel.c:12 B_NAME`) | teaches the buttons (printed names: FX SCL ENV LFO EDIT GLO ...) and the knobs; the keys are not calibrated and no key is named there | **nothing**: it names LFO by its print, which does not change |
-| `tools/emu/keymap.c` (the native emulator) | F1 .. F4 = keys 1 3 5 8, 2 .. 5 = keys 0 2 4 7, Tab = key 6, its comment and `--help` say DIM MIN MAJ SUS / 6 m7 M7 9 / LOCK; the panel draws note names, not chord labels (`emu.c:380`) | the keys stay (they are indices); the comment and `--help` say both layouts (FM-1: F1 F2 F3 = 7 MIN MAJ, F2 + F3 = SUS, 2 3 4 Tab = 6 m7 M7 9, F4 / W and 5 / A = the roots C#4 / C4, F8 (LFO) = LOCK, F10 (GLO) held + F8 = LATCH) |
-| `tools/emu/web/keymap.js` `CHORD`, `tools/emu/web/emu.js:27, 54` | the sticker labels on keys 0 .. 8 and their colours | a `CHORD_FM1` map ({0: 6, 1: 7, 2: m7, 3: MIN, 4: M7, 5: MAJ, 6: 9}) and the label switched by the firmware's layout (a `web_*` export of `cs.layout`, read each frame as the LEDs are); the LFO button's role label LOCK in FM-1 |
+| `tools/emu/keymap.c` (the native emulator) | F1 .. F4 = keys 1 3 5 8, 2 .. 5 = keys 0 2 4 7, Tab = key 6, its comment and `--help` say DIM MIN MAJ SUS / 6 m7 M7 9 / LOCK; the panel draws note names, not chord labels (`emu.c:380`) | the keys stay (they are indices); the comment and `--help` say both layouts (FM-1: F1 F2 F3 = 7 MIN MAJ, F2 + F3 = SUS, 2 3 4 Tab = m7 chord / m7 / M7 / 9, F4 / W and 5 / A = the roots C#4 / C4, F8 (LFO) = LOCK, F10 (GLO) held + F8 = LATCH) |
+| `tools/emu/web/keymap.js` `CHORD`, `tools/emu/web/emu.js:27, 54` | the sticker labels on keys 0 .. 8 and their colours | a `CHORD_FM1` map ({0: m7, 1: 7, 2: m7, 3: MIN, 4: M7, 5: MAJ, 6: 9}); key 0's m7 is colored as a chord type; the label switched by firmware layout; the LFO button's role label LOCK in FM-1 |
 | `tools/emu/web/index.html:92` | the legend: F1 .. F4 DIM MIN MAJ SUS, 2 .. 5, Tab LOCK | the FM-1 line beside it (or switched by the layout) |
 | `tools/emu/README.md:80`, `tools/emu/emu.h:9` | "key index = MIDI note - 53" | unchanged |
 | the layout tool (`tools/layout/emu_sheet.mjs`, `layout_web.c`) | drives the browser emulator's panel; no key map of its own; LAYOUT-TOOL.md "the 27 keys always play" | nothing beyond keymap.js |
@@ -587,7 +591,8 @@ Emulator scripts (`tools/emu/test_cr.sh`, with the layout set through the Option
 in Classic untouched, the regression guard):
 
 5. The keys: in FM-1 C4 and C#4 play 60 and 61; B3 adds the 9; F#3, G#3, A#3 alone 7 MIN MAJ; G#3 + A#3 SUS; the
-   combo table's every row, Secret Chords Off, Simple (with Play Style Simple and Advanced) and All.
+  combo table's every row, Secret Chords Off, Simple (with Play Style Simple and Advanced) and All; F3 + D4 plays
+  Dm7, and F3 remains the 6 extension in Classic.
 6. The window, by the scripts' ms timing, every row of the root-and-pair table: G#, D4 10 ms later, A# at 30 ms:
    nothing goes out until 30 ms (the pair), then Dsus's note-ons at once (MIDI out and the voices), and never an F;
    the same with Secret Chords All: Dsus at 50 ms (F# could still join), and F# at 40 ms makes it the power chord; G# and D4

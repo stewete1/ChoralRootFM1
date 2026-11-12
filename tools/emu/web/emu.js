@@ -65,7 +65,7 @@
       const lab = (layout ? CHORD_FM1 : CHORD)[k], t = keyEl[k].t;
       t.textContent = lab || noteName(k);
       t.setAttribute("font-size", lab ? (lab.length > 3 ? 9 : 11) : 8.5);
-      t.setAttribute("fill", lab ? CHORD_COL[lab] : "#9A999A");
+      t.setAttribute("fill", lab ? (layout && k === 0 ? C.cream : CHORD_COL[lab]) : "#9A999A");
     }
     if (btnEl[3]) {
       btnEl[3].t.textContent = layout ? "LOCK" : BTN_ROLE[3];

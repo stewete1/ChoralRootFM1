@@ -1,0 +1,36 @@
+# F3 is an FM-1 minor seventh chord; Classic retains F3 = 6.
+wait 500
+keys fm1
+btn F3 down
+wait 100
+btn D4 down
+wait 300
+dump                          # 1: FM-1 F3 + D4 = Dm7, D F A C
+btn D4 up
+btn F3 up
+wait 500
+btn LFO 80                    # LOCK on
+wait 300
+btn F3 down
+wait 100
+btn F3 up
+wait 300
+expect led F3 on
+expect led G#3 faint
+btn D4 down
+wait 300
+dump                          # 2: latched m7 remains indicated on F3
+btn D4 up
+btn LFO 80
+wait 300
+keys classic
+wait 500
+btn F3 down
+wait 100
+btn D4 down
+wait 300
+dump                          # 3: Classic F3 + D4 = D6, D F# A B
+btn D4 up
+btn F3 up
+wait 500
+quit

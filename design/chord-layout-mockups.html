@@ -37,7 +37,7 @@ keybeds are diagrams of the 27 keys with each key's light at its level and the t
 </div>
 
 <h2>1. The two layouts</h2>
-<p>Classic is today's (the Orchid's). FM-1: the three small black keys are the types, SUS is G#3 + A#3 with one
+<p>Classic is today's (the Orchid's). FM-1: F3 is an m7 chord key, F#3 G#3 A#3 are the types, SUS is G#3 + A#3 with one
 finger, B3 is the 9, LOCK moves to LFO, C4 and C#4 are roots (20 instead of 18).</p>
 <div class="row" id="layouts"></div>
 
@@ -250,7 +250,7 @@ function keybed(o) {
 
 // the chord keys' labels
 const CLASSIC = { 0: ["6", "ext"], 1: ["DIM", "type"], 2: ["m7", "ext"], 3: ["MIN", "type"], 4: ["M7", "ext"], 5: ["MAJ", "type"], 6: ["LOCK", "lock"], 7: ["9", "ext"], 8: ["SUS", "type"] };
-const FM1 = { 0: ["6", "ext"], 1: ["7", "type"], 2: ["m7", "ext"], 3: ["MIN", "type"], 4: ["M7", "ext"], 5: ["MAJ", "type"], 6: ["9", "ext"] };
+const FM1 = { 0: ["m7", "type"], 1: ["7", "type"], 2: ["m7", "ext"], 3: ["MIN", "type"], 4: ["M7", "ext"], 5: ["MAJ", "type"], 6: ["9", "ext"] };
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 const faint = (ks) => Object.fromEntries(ks.map((k) => [k, "faint"]));
 // every key of the names that sound (pcs: note names, C = 0) between keys a..b

@@ -52,11 +52,12 @@ static const uint8_t L_BTN[L_N] = {NB, BT_KEY, BT_PERF, BT_FX, BT_BASS, BT_EDIT,
 
 /* the chord block: firmware key k (0 = F3) -> cr_mod_t, 0xFF = none. Two layouts (Options > Chord Keys,
  * docs/CHORD-LAYOUT.md): Classic, the Orchid's (B3 LOCK, C4 9, C#4 SUS, the roots from D4), and FM-1: F#3 G#3 A#3
- * the types 7 MIN MAJ, SUS the pair G#3 + A#3 (cu_tk_*: no key of its own), F3 G3 A3 B3 the extensions 6 m7 M7 9,
+ * the types 7 m7 MIN MAJ (F#3, F3, G#3, A#3), SUS the pair G#3 + A#3 (cu_tk_*: no key of its own),
+ * G3 A3 B3 the extensions m7 M7 9,
  * the roots from C4 (20 of them); LOCK on LFO there */
 static const uint8_t CU_MOD_OF_KEY[9] = {CR_MOD_6, CR_MOD_DIM, CR_MOD_M7, CR_MOD_MIN, CR_MOD_MAJ7, CR_MOD_MAJ, 0xFFu,
                                          CR_MOD_9, CR_MOD_SUS};
-static const uint8_t CU_MOD_OF_KEY_FM1[9] = {CR_MOD_6, CR_MOD_MAJ, CR_MOD_M7, CR_MOD_MIN, CR_MOD_MAJ7, CR_MOD_MAJ,
+static const uint8_t CU_MOD_OF_KEY_FM1[9] = {CR_MOD_MIN, CR_MOD_MAJ, CR_MOD_M7, CR_MOD_MIN, CR_MOD_MAJ7, CR_MOD_MAJ,
                                              CR_MOD_9, 0xFFu, 0xFFu};
 #define CU_ROOT0 9u                               /* D4: Classic's first root key */
 #define CU_ROOT0_FM1 7u                           /* C4: FM-1's */
@@ -64,7 +65,8 @@ static const uint8_t CU_MOD_OF_KEY_FM1[9] = {CR_MOD_6, CR_MOD_MAJ, CR_MOD_M7, CR
                                                    * owner, 2026-10-16: the loop slots, naming, the KEY layer's tonic
                                                    * stay where they are) */
 #define CU_NKEY 27u
-#define CU_TK_MASK ((1u << 1) | (1u << 3) | (1u << 5))   /* FM-1's type keys F#3 G#3 A#3 (key bits) */
+#define CU_TK_MASK ((1u << 0) | (1u << 1) | (1u << 3) | (1u << 5))   /* FM-1's type keys F3 F#3 G#3 A#3 */
+#define CU_TK_SECRET_MASK ((1u << 1) | (1u << 3) | (1u << 5))       /* the three keys in the Secret Chords gesture */
 static int cu_black(uint32_t k) { return (int)((0x54Au >> ((k + 5u) % 12u)) & 1u); }
 /* a root key's place among the white keys of the pick maps (D4 = 0 .. G5 = 10), -1 for a black one */
 static int32_t cu_white_idx(uint32_t k)
@@ -1630,9 +1632,10 @@ static struct {
     uint8_t gsave_pend;                   /* SAVE held while a loop played or a take was open: saved at the stop */
     struct { uint32_t until; uint8_t big, col; char text[24], label[32]; } msg;   /* big: 1 PANIC, 2 red type */
     /* the FM-1 layout's type keys (docs/CHORD-LAYOUT.md; cu_tk_*) */
-    uint8_t tk_held;                      /* key bits (CU_TK_MASK): F#3 G#3 A#3 down as chord keys */
+    uint8_t tk_held;                      /* key bits (CU_TK_MASK): F3 F#3 G#3 A#3 down as chord keys */
     uint8_t tk_latched7;                  /* LOCK: F#3's MAJ + m7 pair is latched as the FM-1's 7 key */
-    uint8_t tk_ord[3], tk_n;              /* .. in the order pressed (the keys of an open gesture stay until it is decided) */
+    uint8_t tk_latched_min7;              /* LOCK: F3's MIN + m7 pair is latched as its m7 chord */
+    uint8_t tk_ord[4], tk_n;              /* .. in the order pressed (the keys of an open gesture stay until it is decided) */
     uint8_t g_open, g_keys;               /* a gesture is open (not decided): the type keys pressed in it */
     uint32_t g_t0;                        /* .. its first key's press (cu_now) */
     uint8_t tposted;                      /* bit cr_mod_t: the types posted down for the type keys held (LOCK's latched
@@ -4588,6 +4591,11 @@ static void cu_tk_prune(void)                      /* the order: the keys held o
 /* the type keys t (key bits) -> the types to post, the one that counts as pressed last at the end; returns how many */
 static uint32_t cu_tk_resolve(uint32_t t, uint8_t *w)
 {
+    if (t & 1u) {                          /* F3: a minor seventh chord (the former 6 extension) */
+        w[0] = CR_MOD_MIN;
+        w[1] = CR_MOD_M7;
+        return 2;
+    }
     uint32_t f = (t >> CU_TKF) & 1u, g = (t >> CU_TKG) & 1u, a = (t >> CU_TKA) & 1u, sec = (uint32_t)cu_secret_on();
     if (g && a) {
         if (!f) {
@@ -4685,6 +4693,7 @@ static void cu_tk_lock_release(void)               /* LOCK: the last type key le
         cu.mlatch &= (uint8_t)~cu.tpend;
         cu.tposted &= (uint8_t)~cu.tpend;
         cu.tk_latched7 = 0;
+        cu.tk_latched_min7 = 0;
         cu.tpend = 0;
     }
     cu.mlatch |= cu.tposted;                       /* (the rest: latched, down as they are) */
@@ -4701,7 +4710,8 @@ static void cu_tk_decide(void)                     /* the gesture decided: its s
         uint32_t d = 0, lt = cu.mlatch & CU_MOD_TOP, ext = cu_mods_phys() & ~CU_MOD_TOP & 0xFFu;
         int force = 0;
         cu.tk_latched7 = (uint8_t)((t & (1u << CU_TKF)) && n == 2 && w[0] == CR_MOD_MAJ && w[1] == CR_MOD_M7);
-        if (cu.tk_latched7 && !(cu.kheld & (1u << 2)))  /* F#3 contributes this m7; G3 is a separate extension */
+        cu.tk_latched_min7 = (uint8_t)((t & 1u) && n == 2 && w[0] == CR_MOD_MIN && w[1] == CR_MOD_M7);
+        if ((cu.tk_latched7 || cu.tk_latched_min7) && !(cu.kheld & (1u << 2)))  /* embedded m7; G3 is a separate extension */
             ext &= ~(1u << CR_MOD_M7);
         for (x = 0; x < n; x++)
             d |= 1u << w[x];
@@ -4721,6 +4731,7 @@ static void cu_tk_decide(void)                     /* the gesture decided: its s
         cu_tk_post(w, n, 1, force);
     } else {
         cu.tk_latched7 = 0;
+        cu.tk_latched_min7 = 0;
         cu_tk_post(w, n, 1, 0);
     }
     if (cu.g_keys & ~cu.tk_held) {                 /* gesture keys let go before the decision */
@@ -4745,12 +4756,12 @@ static void cu_tk_press(uint32_t k)                /* an FM-1 type key down (as 
     if (cu.tk_held & bit)
         return;
     cu.tk_held |= (uint8_t)bit;
-    if (cu_tk_pos(k) < 0 && cu.tk_n < 3u)
+    if (cu_tk_pos(k) < 0 && cu.tk_n < 4u)
         cu.tk_ord[cu.tk_n++] = (uint8_t)k;
     if (cu.g_open) {                               /* joins the open gesture: decided early if nothing else can */
         cu.g_keys |= (uint8_t)bit;
         t = cu.tk_held | cu.g_keys;
-        if (cu_secret_on() ? (t & CU_TK_MASK) == CU_TK_MASK : ((t >> CU_TKG) & (t >> CU_TKA) & 1u))
+        if (cu_secret_on() ? (t & CU_TK_SECRET_MASK) == CU_TK_SECRET_MASK : ((t >> CU_TKG) & (t >> CU_TKA) & 1u))
             cu_tk_decide();
         return;
     }
@@ -4770,6 +4781,10 @@ static void cu_tk_press(uint32_t k)                /* an FM-1 type key down (as 
     }
     cu.tpend = 0;                                  /* (joins keys held from a decided gesture: at once) */
     n = cu_tk_resolve(cu.tk_held, w);
+    if (cu.clock) {
+        cu.tk_latched7 = (uint8_t)((cu.tk_held & (1u << CU_TKF)) && n == 2 && w[0] == CR_MOD_MAJ && w[1] == CR_MOD_M7);
+        cu.tk_latched_min7 = (uint8_t)((cu.tk_held & 1u) && n == 2 && w[0] == CR_MOD_MIN && w[1] == CR_MOD_M7);
+    }
     cu_tk_post(w, n, 1, 0);
     cu_mod_touch();
 }
@@ -4807,7 +4822,9 @@ static uint32_t cu_tk_keys_of(uint32_t m)          /* latched types (bit cr_mod_
     if ((m >> CR_MOD_DIM) & 1u)
         k |= (1u << CU_TKF) | (sus ? (1u << CU_TKG) | (1u << CU_TKA) : 0u);
     if ((m >> CR_MOD_MIN) & 1u)
-        k |= 1u << CU_TKG;
+        k |= cu.tk_latched_min7 ? 0u : (1u << CU_TKG);
+    if (cu.tk_latched_min7)
+        k |= 1u;
     if (cu.tk_latched7)
         k |= 1u << CU_TKF;
     else if ((m >> CR_MOD_MAJ) & 1u)

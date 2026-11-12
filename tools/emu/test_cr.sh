@@ -3642,6 +3642,18 @@ fk() { dl 'cr: voices' "$1" | sed -n 's/.* chord \(.*\) sounding \([01]\) notes\
 [ "$(fk 3)" = "Ddim|1| 62 65 68" ] &&
     ok "Classic F#3 + D4 remains Ddim" || bad "Classic F#3 chord: '$(fk 3)'"
 
+echo "FM-1 F3 minor seventh, LOCK's key indication, and Classic 6"
+EMU_UI_LOG=1 "$EMU" --headless --script "$S/cr_fm1_minor7.txt" >"$OUT/cr_fm1_minor7.log" 2>&1 || bad "cr_fm1_minor7: exit $?"
+L="$OUT/cr_fm1_minor7.log"
+dl() { LC_ALL=C grep -a "^  $1" "$L" | sed -n "$2p"; }
+fk() { dl 'cr: voices' "$1" | sed -n 's/.* chord \(.*\) sounding \([01]\) notes\(.*\)$/\1|\2|\3/p'; }
+[ "$(fk 1)" = "Dm7|1| 62 65 69 72" ] &&
+    ok "FM-1 F3 + D4 is Dm7: root, minor third, perfect fifth, minor seventh" || bad "FM-1 F3 chord: '$(fk 1)'"
+[ "$(fk 2)" = "Dm7|1| 62 65 69 72" ] && has 'expect led F3 on .*: ok' "$L" && has 'expect led G#3 faint .*: ok' "$L" &&
+    ok "LOCK latches the m7 chord indicator on F3" || bad "LOCK's m7 key: '$(fk 2)'"
+[ "$(fk 3)" = "D6|1| 62 66 69 71" ] &&
+    ok "Classic F3 + D4 remains D6" || bad "Classic F3 chord: '$(fk 3)'"
+
 echo "Options > MIDI Keys and Full K Shorts (0.24): MIDI notes 53 .. 79 press the keys; F#5 / G5 on the Full keyboard"
 EMU_UI_LOG=1 "$EMU" --headless --script "$S/cr_fm1_midi_full.txt" >"$OUT/cr_fm1_midi_full.log" 2>&1 || bad "cr_fm1_midi_full: exit $?"
 L="$OUT/cr_fm1_midi_full.log"
